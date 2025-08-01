@@ -1,0 +1,76 @@
+You are a senior full-stack engineer. Build a minimal but functional prompt playground in Next.js 14+ using the App Router and TypeScript. It should support the following features and structure.
+
+🔧 Features
+Prompt Editing
+
+User can write a prompt using Jinja2-like syntax (e.g., Hello {{ name }}).
+
+User can define input variables in JSON format (e.g., { "name": "Rohit" }).
+
+Use nunjucks to render the final prompt.
+
+Display the final rendered prompt in real-time.
+
+OpenAI Integration
+
+On clicking a "Run" button, send the rendered prompt to OpenAI’s API (use gpt-4o model via openai npm package).
+
+Show the AI's output, token usage (if available), and timestamp.
+
+Allow outputs to be stacked (not replaced) for side-by-side evaluation.
+
+Prompt Management
+
+Allow creating, renaming, deleting, and switching between prompts.
+
+Prompts are uniquely identified using a slug or ID.
+
+UI should have a collapsible left sidebar for prompt selection and management.
+
+Versioning
+
+Each prompt supports manual versioning.
+
+A “Save Version” button stores the current template + variables into a versioned history (with timestamp + optional note) in localStorage.
+
+Allow:
+
+Viewing version history (in a right-side collapsible panel),
+
+Restoring a version,
+
+Deleting a version.
+
+Layout & UX
+
+Use Tailwind CSS.
+
+Divide the center section into two:
+
+Left side: Prompt template input, variables input, rendered preview.
+
+Right side: Most recent AI output and analytics.
+
+Stack all previous outputs below the latest.
+
+Keep prompt selector (left) and version settings (right) collapsible.
+
+🧾 Tech Constraints
+Use Next.js App Router, TypeScript, and Tailwind CSS.
+
+Use React state + localStorage for managing prompts and versions.
+
+Use nunjucks for Jinja2-style prompt rendering.
+
+Use openai npm package to call GPT-4o.
+
+Focus only on functionality — no deployment/config instructions.
+
+✅ Output Requirements
+Provide complete code with all files.
+
+Use functional components and hooks.
+
+Include package.json with minimal dependencies.
+
+Do not add comments, explanations, or markdown — only output full working code.
