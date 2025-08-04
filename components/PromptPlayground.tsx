@@ -19,6 +19,11 @@ import PromptSidebar from './PromptSidebar';
 import PromptEditor from './PromptEditor';
 import OutputPanel from './OutputPanel';
 import VersionPanel from './VersionPanel';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from './ui/resizable';
 
 export default function PromptPlayground() {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -67,7 +72,7 @@ export default function PromptPlayground() {
 
     const updatedPrompts = [...prompts, newPrompt];
     setPrompts(updatedPrompts);
-    savePrompts(updatedPrompts);
+    savePrompts(updatedPrompts); // updating in local storage
     setCurrentPromptId(newPrompt.id);
   };
 
@@ -85,7 +90,7 @@ export default function PromptPlayground() {
     );
 
     setPrompts(updatedPrompts);
-    savePrompts(updatedPrompts);
+    savePrompts(updatedPrompts); // updating in local storage
     setCurrentPrompt(updatedPrompt);
   };
 
@@ -102,7 +107,7 @@ export default function PromptPlayground() {
     const updatedVariableSets = { ...promptVariableSets };
     delete updatedVariableSets[id];
     setPromptVariableSets(updatedVariableSets);
-    saveVariableSets(updatedVariableSets);
+    saveVariableSets(updatedVariableSets); // updating in local storage
 
     if (id === currentPromptId) {
       if (updatedPrompts.length > 0) {
@@ -128,7 +133,7 @@ export default function PromptPlayground() {
 
     const updatedVersions = [...versions, newVersion];
     setVersions(updatedVersions);
-    saveVersions(updatedVersions);
+    saveVersions(updatedVersions); // updating in local storage
   };
 
   const restoreVersion = (version: PromptVersion) => {
@@ -141,7 +146,7 @@ export default function PromptPlayground() {
   const deleteVersion = (versionId: string) => {
     const updatedVersions = versions.filter((v) => v.id !== versionId);
     setVersions(updatedVersions);
-    saveVersions(updatedVersions);
+    saveVersions(updatedVersions); // updating in local storage
   };
 
   const updateVariableSets = (
@@ -153,7 +158,7 @@ export default function PromptPlayground() {
       [promptId]: variableSets,
     };
     setPromptVariableSets(updatedVariableSets);
-    saveVariableSets(updatedVariableSets);
+    saveVariableSets(updatedVariableSets); // updating in local storage
   };
 
   const runPrompt = async (
@@ -239,7 +244,7 @@ export default function PromptPlayground() {
         onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
 
-      <div className="flex-1 grid grid-cols-2">
+      {/* <div className="flex-1 grid grid-cols-2">
         <div className="p-6 w-full h-full overflow-hidden ">
           {currentPrompt ? (
             <PromptEditor
@@ -265,7 +270,39 @@ export default function PromptPlayground() {
             outputs={outputs.filter((o) => o.promptId === currentPromptId)}
           />
         </div>
-      </div>
+      </div> */}
+
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel minSize={35} className=" min-w-[400px]">
+          <div className="p-6 w-full h-full overflow-hidden ">
+            {currentPrompt ? (
+              <PromptEditor
+                prompt={currentPrompt}
+                variableSets={currentVariableSets}
+                onUpdatePrompt={updatePrompt}
+                onUpdateVariableSets={(sets) =>
+                  updateVariableSets(currentPrompt.id, sets)
+                }
+                onRunPrompt={runPrompt}
+                onSaveVersion={saveVersion}
+                isRunning={isRunning}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                Create a prompt to get started
+              </div>
+            )}
+          </div>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel minSize={31}>
+          <div className="border-l border-border w-full h-full overflow-y-auto overflow-x-hidden ">
+            <OutputPanel
+              outputs={outputs.filter((o) => o.promptId === currentPromptId)}
+            />
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
 
       <VersionPanel
         versions={currentVersions}
@@ -278,7 +315,7 @@ export default function PromptPlayground() {
       {!versionPanelOpen && (
         <button
           onClick={() => setVersionPanelOpen(true)}
-          className="fixed right-4 top-4 bg-primary text-primary-foreground p-2 rounded-lg shadow-lg hover:bg-primary/90 transition-colors"
+          className="fixed z-20 right-4 top-4 bg-primary text-primary-foreground p-2 rounded-lg shadow-lg hover:bg-primary/90 transition-colors"
         >
           <svg
             className="w-5 h-5"

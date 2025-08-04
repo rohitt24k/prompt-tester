@@ -18,7 +18,8 @@ import {
   CollapsibleTrigger,
 } from './ui/collapsible';
 import { Button } from './ui/button';
-import { ChevronsUpDown } from 'lucide-react';
+import { ChevronsUpDown, Copy } from 'lucide-react';
+import { copyContent } from '@/lib/utils';
 
 const formatTimestamp = (timestamp: string) => {
   return new Date(timestamp).toLocaleString();
@@ -43,8 +44,8 @@ export default function OutputPanel({
   outputs: batchOutputs,
 }: OutputPanelProps) {
   return (
-    <div className="h-full w-full grid grid-rows-[auto,_1fr] overflow-auto">
-      <div className="mb-4">
+    <div className="h-full w-full grid grid-rows-[auto,_1fr] relative ">
+      <div className=" sticky top-0 z-10 bg-white p-6 pb-4">
         <h2 className="text-xl font-semibold text-foreground">AI Outputs</h2>
         <p className="text-sm text-muted-foreground mt-1">
           {batchOutputs.length} output(s)
@@ -56,7 +57,7 @@ export default function OutputPanel({
           Run a prompt to see AI outputs here
         </div>
       ) : (
-        <div className=" overflow-auto space-y-5 ">
+        <div className="  space-y-5 p-6 pt-0 w-full overflow-x-auto ">
           {batchOutputs.map(({ id, outputs }, index) => (
             <BatchOutput
               index={batchOutputs.length - index}
@@ -118,11 +119,18 @@ const BatchOutput = ({
                           <Badge variant="destructive">Error</Badge>
                         )}
                       </div>
-                      {index === 0 && (
-                        <CardDescription className="text-xs">
-                          {formatTimestamp(output.timestamp)}
-                        </CardDescription>
-                      )}
+                      <CardDescription className="text-xs flex items-center gap-3">
+                        {index === 0 && formatTimestamp(output.timestamp)}
+                        <Button
+                          onClick={() => {
+                            copyContent(output.content);
+                          }}
+                          variant={'ghost'}
+                          size={'smallIcon'}
+                        >
+                          <Copy size={16} />
+                        </Button>
+                      </CardDescription>
                     </div>
                   </CardHeader>
 

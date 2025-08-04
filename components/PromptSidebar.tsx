@@ -58,7 +58,7 @@ export default function PromptSidebar({
   return (
     <>
       <div
-        className={`bg-card border-r border-border transition-all duration-300 ${
+        className={`bg-card border-r border-border transition-all duration-300 shrink-0 ${
           isOpen ? 'w-80' : 'w-0'
         } overflow-hidden`}
       >
@@ -142,7 +142,7 @@ export default function PromptSidebar({
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-medium text-foreground">
-                          {prompt.name}
+                          {`${prompt.name.substring(0, 15)}${prompt.name.length >= 15 ? '...' : ''}`}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {new Date(prompt.updatedAt).toLocaleDateString()}

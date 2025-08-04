@@ -1,18 +1,24 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { PromptVersion } from '@/lib/types'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { RotateCcw, Trash2, ChevronRight } from 'lucide-react'
+import React from 'react';
+import { PromptVersion } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { RotateCcw, Trash2, ChevronRight } from 'lucide-react';
 
 interface VersionPanelProps {
-  versions: PromptVersion[]
-  onRestoreVersion: (version: PromptVersion) => void
-  onDeleteVersion: (versionId: string) => void
-  isOpen: boolean
-  onToggle: () => void
+  versions: PromptVersion[];
+  onRestoreVersion: (version: PromptVersion) => void;
+  onDeleteVersion: (versionId: string) => void;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
 export default function VersionPanel({
@@ -23,12 +29,12 @@ export default function VersionPanel({
   onToggle,
 }: VersionPanelProps) {
   const formatTimestamp = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString()
-  }
+    return new Date(timestamp).toLocaleString();
+  };
 
   return (
     <div
-      className={`bg-card border-l border-border transition-all duration-300 ${
+      className={`bg-card shrink-0 border-l border-border transition-all duration-300 ${
         isOpen ? 'w-80' : 'w-0'
       } overflow-hidden`}
     >
@@ -44,20 +50,26 @@ export default function VersionPanel({
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-sm text-muted-foreground">{versions.length} version(s)</p>
+        <p className="text-sm text-muted-foreground">
+          {versions.length} version(s)
+        </p>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-140px)]">
-        <div className="p-4 space-y-3">
+      <ScrollArea className="h-[calc(100vh-140px)] w-80 ">
+        <div className=" p-4 space-y-3">
           {versions.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               No versions saved yet. Save a version to see it here.
             </div>
           ) : (
             versions
-              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime(),
+              )
               .map((version, index) => (
-                <Card key={version.id}>
+                <Card key={version.id} className=" w-[288px] ">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-sm">
@@ -77,8 +89,12 @@ export default function VersionPanel({
                           variant="ghost"
                           size="icon"
                           onClick={() => {
-                            if (confirm('Are you sure you want to delete this version?')) {
-                              onDeleteVersion(version.id)
+                            if (
+                              confirm(
+                                'Are you sure you want to delete this version?',
+                              )
+                            ) {
+                              onDeleteVersion(version.id);
                             }
                           }}
                           className="h-8 w-8 text-destructive hover:text-destructive"
@@ -93,26 +109,28 @@ export default function VersionPanel({
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-3 w-full">
                     {version.note && (
-                      <div className="text-sm">
-                        {version.note}
-                      </div>
+                      <div className="text-sm">{version.note}</div>
                     )}
 
                     <div className="space-y-2">
                       <div>
-                        <div className="text-xs text-muted-foreground mb-1">Template:</div>
+                        <div className="text-xs text-muted-foreground mb-1">
+                          Template:
+                        </div>
                         <div className="p-2 bg-muted rounded text-xs font-mono max-h-16 overflow-y-auto">
                           {version.template || 'Empty template'}
                         </div>
                       </div>
-                      <div>
-                        <div className="text-xs text-muted-foreground mb-1">Variables:</div>
+                      {/* <div>
+                        <div className="text-xs text-muted-foreground mb-1">
+                          Variables:
+                        </div>
                         <div className="p-2 bg-muted rounded text-xs font-mono max-h-16 overflow-y-auto">
                           {version.variables || '{}'}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </CardContent>
                 </Card>
@@ -121,5 +139,5 @@ export default function VersionPanel({
         </div>
       </ScrollArea>
     </div>
-  )
+  );
 }

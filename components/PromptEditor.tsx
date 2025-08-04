@@ -21,14 +21,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { ChevronsUpDown, Play, Save } from 'lucide-react';
+import { ChevronsUpDown, Copy, Play, Save } from 'lucide-react';
 import VariableManager from './VariableManager';
-import { ScrollArea } from './ui/scroll-area';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from './ui/collapsible';
+import { copyContent } from '@/lib/utils';
 
 interface PromptEditorProps {
   prompt: Prompt;
@@ -139,9 +139,9 @@ export default function PromptEditor({
   // };
 
   return (
-    <div className=" h-full grid grid-rows-[auto,_1fr] space-y-6 ">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">{prompt.name}</h1>
+    <div className="@container w-full h-full grid grid-rows-[auto,_1fr] space-y-6 ">
+      <div className=" flex flex-wrap items-center justify-between">
+        <h1 className=" text-2xl font-bold text-foreground">{prompt.name}</h1>
         <div className="flex space-x-2">
           <Button onClick={() => setShowSaveVersion(true)} variant="outline">
             <Save className="w-4 h-4 mr-2" />
@@ -162,12 +162,24 @@ export default function PromptEditor({
         </div>
       </div>
 
-      <div className=" grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-auto ">
-        <div className="grid grid-rows-2 gap-y-4">
+      <div className=" grid grid-cols-1 @2xl:grid-cols-2 gap-6 overflow-auto ">
+        <div className=" w-full grid grid-rows-2 gap-y-4">
           <Card className=" flex flex-col ">
             <CardHeader>
               <CardTitle className="text-base flex justify-between items-center ">
                 <p>Prompt Template</p>
+
+                {template && (
+                  <Button
+                    onClick={() => {
+                      copyContent(template);
+                    }}
+                    variant={'ghost'}
+                    size={'smallIcon'}
+                  >
+                    <Copy size={16} />
+                  </Button>
+                )}
                 {/* <Popover>
                   <PopoverTrigger>
                     <Button
@@ -237,8 +249,8 @@ export default function PromptEditor({
           </Card>
         </div>
 
-        <Card className=" overflow-y-auto ">
-          <ScrollArea className=" h-full relative ">
+        <Card className=" w-full overflow-x-hidden overflow-y-auto ">
+          <>
             <CardHeader className=" sticky top-0 bg-card ">
               <CardTitle className="text-base">Rendered Previews</CardTitle>
               <CardDescription>
@@ -251,26 +263,39 @@ export default function PromptEditor({
                   Create variable sets to see previews
                 </div>
               ) : (
-                <div className="space-y-4 overflow-y-auto">
+                <div className="space-y-4 overflow-y-auto overscroll-x-auto">
                   {renderedPreviews.map((preview, index) => (
                     <Collapsible
                       key={index}
                       defaultOpen
-                      className="border rounded-lg p-3"
+                      className="border rounded-lg p-3 w-full "
                     >
                       <div className="flex items-center justify-between ">
                         <Badge variant="outline">{preview.setName}</Badge>
-                        <CollapsibleTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                          >
-                            <ChevronsUpDown />
-                          </Button>
-                        </CollapsibleTrigger>
+                        <div className=" flex items-center gap-3 ">
+                          {!preview.error && (
+                            <Button
+                              onClick={() => {
+                                copyContent(preview.preview);
+                              }}
+                              variant={'ghost'}
+                              size={'smallIcon'}
+                            >
+                              <Copy size={16} />
+                            </Button>
+                          )}
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-8"
+                            >
+                              <ChevronsUpDown />
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                       </div>
-                      <CollapsibleContent className="bg-muted rounded p-3 mt-2">
+                      <CollapsibleContent className="bg-muted rounded p-3 mt-2 ">
                         {preview.error ? (
                           <div className="text-destructive font-mono text-sm">
                             Error: {preview.error}
@@ -286,7 +311,7 @@ export default function PromptEditor({
                 </div>
               )}
             </CardContent>
-          </ScrollArea>
+          </>
         </Card>
       </div>
 
